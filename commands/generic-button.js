@@ -3,8 +3,8 @@ const { MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-            .setName(''/* ex: 'ping' for /ping */)
-            .setDescription(''/* description*/),
+            .setName('testbtncmd'/* ex: 'ping' for /ping */)
+            .setDescription('a generic command that makes a button'/* description*/),
     async execute(interaction) {
         // TODO: Implement command code
 

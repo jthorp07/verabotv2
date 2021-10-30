@@ -1,6 +1,7 @@
 const {Client, Intents, Collection} = require('discord.js');
-const {TOKEN} = require('./config.json');
+const {TOKEN, DB, DBPASS} = require('./config.json');
 const fs = require('fs');
+const mysql = require('mysql');
 
 // Holy fuck that's a lot of intention :flushed:
 const intent_flags = [Intents.FLAGS.GUILDS, 
@@ -20,10 +21,23 @@ const intent_flags = [Intents.FLAGS.GUILDS,
 const client = new Client({intents: intent_flags});
 
 /*
+  Log in to database
+*/
+const con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: DBPASS,
+    database: DB,
+    insecureAuth: true
+});
+
+
+/*
 * Registering Commands
 */
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+const Perms = require('./command_util/permission'); // For checking user permissions before executing commands
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -36,7 +50,7 @@ for (const file of commandFiles) {
   Preparing button vars for potential button handling
 */
 let btnCommandsTemp = new Collection();
-const btnFiles = fs.readdirSync('./button-commands').filter(file => file.endsWith('.js'));
+const btnFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
 for (const file of btnFiles) {
     const btnCmd = require(`./buttons/${file}`);
     btnCommandsTemp.set(btnCmd.data.customId, btnCmd);
@@ -56,14 +70,20 @@ client.on('ready', () => {
 // Command Handling
 client.on('interactionCreate', async interaction => {
 
+    // This handler only deals with command interactions
     if (!interaction.isCommand()) return;
 
+    // Check command exists
     const command = client.commands.get(interaction.commandName);
-
 	if (!command) return;
 
+    // Check user permissions
+    if (!Perms.checkPermissions(con, command.permission, interaction.member.id)) {
+        interaction.reply(`Insufficient user permissions:\nPermission \'${command.permission}\'`)
+    }
+
 	try {
-		await command.execute(interaction);
+		await command.execute(interaction, con);
 	} catch (error) {
 		console.error(error);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
@@ -71,17 +91,24 @@ client.on('interactionCreate', async interaction => {
 
 });
 
+
+/*
+  Button Handler
+*/
 client.on('interactionCreate', (interaction) => {
     if (!interaction.isButton()) return
 
     // Handle buttons here...
-    // TODO: make button handler that doesn't rely on if/else chain
     const btnCommand = btnCommands.get(interaction.customId);
-
     if (!btnCommand) {
         await interaction.reply(`This button doesn't have a registered command.\n
                                 Please send a report to a bot developer to have this fixed.`);
         return;
+    }
+
+    // Check user permissions
+    if (!Perms.checkPermissions(con, btnCommand.data.permissions, interaction.member.id)) {
+        interaction.reply(`Insufficient user permissions:\nPermission \'${btnCommand.data.permissions}\'`)
     }
 
     try {
@@ -91,6 +118,18 @@ client.on('interactionCreate', (interaction) => {
         await interaction.reply({ content: 'There was an error while executing this button\'s command!', ephemeral: true});
     }
 
+    
+
+});
+
+/**
+ * TODO: XP system has to use the messageCreate event
+ */
+client.on('messageCreate', recvdMsg => {
+
+    //TODO: Add XP system
+
+    //TODO: Add Database channel support
     
 
 });

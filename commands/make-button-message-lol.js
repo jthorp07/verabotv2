@@ -20,4 +20,5 @@ module.exports = {
         console.log(`NOW THATS A MESSAGE\n${JSON.stringify(msg)}`)        
         await interaction.reply(msg);
 	},
+    permission: 'owner'
 };

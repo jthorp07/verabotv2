@@ -1,29 +1,35 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
+const {CommandInteraction} = require('discord.js');
+const {Connection} = require('mysql');
 
 module.exports = {
     data: new SlashCommandBuilder()
-            .setName(''/* ex: 'ping' for /ping */)
-            .setDescription(''/* description to be displayed in autofill */),
-    async execute(interaction) {
-
-        // TODO: Implement user permissions {Fetch from database}
+            .setName('testcmd'/* ex: 'ping' for /ping */)
+            .setDescription('a generic command'/* description to be displayed in autofill */),
             /*
-              To do this, will have a table named {UserPermissions} in db
-              Structure:
-                UserPermissions {
-                    permissionName: roleId
-                    permissionName: roleId
-                    ...
-                }
-              Command will declare permission required, then query database &
-              compare returned roleId to user's roles
+              For other options:
 
-              If permissions not met: bot replies "Insufficient permissions"
+              .addStringOption(option => {
+                option.setName('optionName')
+                .setDescription('desc')
+                .setRequired(true or false)
+              })
             */
-         
 
+    /**
+     * 
+     * @param {CommandInteraction} interaction 
+     * @param {Connection} con 
+     */
+    async execute(interaction, con) {
         // TODO: Implement command code
 
-    },
+        /*
+          For fetching options:
 
+          interaction.options.getString('stringOptionName')
+        */
+
+    },
+    permission: 'all'
 };
