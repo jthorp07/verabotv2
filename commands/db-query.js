@@ -6,11 +6,11 @@ module.exports = {
     data: new SlashCommandBuilder()
             .setName('dbquery')
             .setDescription('Queries the bot\'s database and replies with the query\'s response')
-            .addStringOption(option => {
+            .addStringOption(option => 
               option.setName('query')
               .setDescription('The query to be sent to the database')
-              .setRequired(true);
-            }),
+              .setRequired(true)
+            ),
     /**
      * 
      * @param {CommandInteraction} interaction 

@@ -8,29 +8,55 @@ module.exports = {
      * @param {string} permissionLevel 
      * @param {string} user 
      * 
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
     async checkPermissions(con, permissionLevel, user) {
 
-        let query = `SELECT * FROM permissions WHERE discordid = ${user}`
-
-        con.query(query).then(rows => {
-
-            switch (permissionLevel) {
-                case 'all':
-                    return true; // Anyone can use it so go ahead
-                case 'owner':
-                    return (rows[0].isOwner==1);
-                case 'moderator':
-                    return (rows[0].isMod==1);
-                case 'administrator':
-                    return (rows[0].isAdmin==1);
-                default:
-                    return false; // If this does happen I don't want anything else to happen o-o
+        return new Promise((resolve, reject) => {
+            if (permissionLevel == 'all') {
+                console.log(`Permissions: All -> Proceeding`);
+                return;
             }
-
-        });
-
+            let query = `SELECT * FROM permissions WHERE discordid = ${user}`
+            con.query(query, (err, rows) => {
+                if (err) {
+                    console.log(`Error querying permissions`);
+                    reject(err);
+                }
+                console.log(`Permissions: ${permissionLevel}`);
+                console.log(`isOwner: ${rows[0].isOwner}`);
+                // Owner
+                if (permissionLevel == 'owner') {
+                    if (rows[0].isOwner == 1) {
+                        console.log(`Sufficient perms`);
+                        resolve(true);
+                    } else {
+                        console.log(`Insufficient perms`);
+                        resolve(false);
+                    }
+                }
+                // Admin
+                if (permissionLevel == 'administrator') {
+                    if (rows[0].isAdmin == 1) {
+                        console.log(`Sufficient perms`);
+                        resolve(true);
+                    } else {
+                        console.log(`Insufficient perms`);
+                        resolve(false);
+                    }
+                }
+                // Mod
+                if (permissionLevel == 'moderator') {
+                    if (rows[0].isMod == 1) {
+                        console.log(`Sufficient perms`);
+                        resolve(true);
+                    } else {
+                        console.log(`Insufficient perms`);
+                        resolve(false);
+                    }
+                }
+                reject('the promise never resolved or rejected');            
+            });
+        });        
     }
-
 }

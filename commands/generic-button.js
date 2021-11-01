@@ -17,5 +17,5 @@ module.exports = {
                         .setLabel('Generic Button'/* Text that displays on the button */)
                         .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */)
     },
-
+    permissions: 'all'
 };

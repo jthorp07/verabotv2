@@ -4,18 +4,18 @@ const {Connection} = require('mysql');
 
 module.exports = {
     data: new SlashCommandBuilder()
-            .setName('rrCreate')
+            .setName('rrcreate')
             .setDescription('Creates a reactrole message with the given emoji/role pairs.')
-            .addRoleOption(option => {
+            .addRoleOption(option => 
                 option.setName('role')
                 .setDescription('The role that will be given upon reacting')
-                .setRequired(true);
-            })
-            .addStringOption(option => {
+                .setRequired(true)
+            )
+            .addStringOption(option => 
                 option.setName('emoji')
                 .setDescription('The emoji that users will react to receive a role')
-                .setRequired(true);
-            }),
+                .setRequired(true)
+            ),
             
     /**
      * @param {CommandInteraction} interaction 
@@ -46,5 +46,5 @@ module.exports = {
         con.query(``)
 
     },
-    permission: 'moderator' // Added field to fetch permission level required
+    permissions: 'moderator' // Added field to fetch permission level required
 };

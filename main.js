@@ -18,11 +18,13 @@ const intent_flags = [Intents.FLAGS.GUILDS,
     Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, 
     Intents.FLAGS.DIRECT_MESSAGE_TYPING];
 
+console.log(`Client Instantiated`);
 const client = new Client({intents: intent_flags});
 
 /*
   Log in to database
 */
+console.log(`Connecting to MySQL Database`);
 const con = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -30,6 +32,7 @@ const con = mysql.createConnection({
     database: DB,
     insecureAuth: true
 });
+console.log(`MySQL Connection Created`);
 
 
 /*
@@ -37,18 +40,22 @@ const con = mysql.createConnection({
 */
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const Perms = require('./command_util/permission'); // For checking user permissions before executing commands
+const Perms = require('./util/permission'); // For checking user permissions before executing commands
 
+console.log(`Setting Commands`);
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
+    console.log(`  Fetching command '${command.data.name}''`);
 	// Set a new item in the Collection
 	// With the key as the command name and the value as the exported module
 	client.commands.set(command.data.name, command);
+    console.log(`  Command '${command.data.name} set'`);
 }
 
 /*
   Preparing button vars for potential button handling
 */
+console.log(`Setting button commands`);
 let btnCommandsTemp = new Collection();
 const btnFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
 for (const file of btnFiles) {
@@ -56,6 +63,7 @@ for (const file of btnFiles) {
     btnCommandsTemp.set(btnCmd.data.customId, btnCmd);
 }
 const btnCommands = btnCommandsTemp;
+console.log(`  Button commands set`);
 
 
 /**
@@ -63,7 +71,7 @@ const btnCommands = btnCommandsTemp;
  */
 client.on('ready', () => {
 
-    console.log('Ready.');
+    console.log('Bot Ready.');
 
 });
 
@@ -77,18 +85,26 @@ client.on('interactionCreate', async interaction => {
     const command = client.commands.get(interaction.commandName);
 	if (!command) return;
 
+    console.log(`Command received: ${command.data.name}`);
+
     // Check user permissions
-    if (!Perms.checkPermissions(con, command.permission, interaction.member.id)) {
-        interaction.reply(`Insufficient user permissions:\nPermission \'${command.permission}\'`)
-    }
-
-	try {
-		await command.execute(interaction, con);
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-	}
-
+    Perms.checkPermissions(con, command.permissions, interaction.member.id).then(perms => {
+        if (!perms) {
+            console.log(`  Insufficient permissions: Halting command`);
+            interaction.reply(`  Insufficient user permissions:\nPermission \'${command.permissions}\' required`);
+            return;
+        }
+        try {
+		    command.execute(interaction, con);
+            console.log(`  Command executed`);
+	    } catch (error) {
+		    console.error(error);
+		    interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	    }
+    }).catch(err => {
+        console.log(err);
+        return;
+    });	
 });
 
 
@@ -99,23 +115,27 @@ client.on('interactionCreate', (interaction) => {
     if (!interaction.isButton()) return
 
     // Handle buttons here...
+    console.log(`Button pressed`)
     const btnCommand = btnCommands.get(interaction.customId);
     if (!btnCommand) {
-        await interaction.reply(`This button doesn't have a registered command.\n
+        interaction.reply(`This button doesn't have a registered command.\n
                                 Please send a report to a bot developer to have this fixed.`);
         return;
     }
 
     // Check user permissions
     if (!Perms.checkPermissions(con, btnCommand.data.permissions, interaction.member.id)) {
-        interaction.reply(`Insufficient user permissions:\nPermission \'${btnCommand.data.permissions}\'`)
+        interaction.reply(`Insufficient user permissions:\nPermission \'${btnCommand.data.permissions}\'`);
+        console.log(`  Insufficient permissions: Halting button handler`);
     }
 
     try {
-        await btnCommand.btnExecute(interaction);
+        btnCommand.btnExecute(interaction);
+        console.log(`  Button handled`);
     } catch (err) {
         console.error(err);
-        await interaction.reply({ content: 'There was an error while executing this button\'s command!', ephemeral: true});
+        interaction.reply({ content: 'There was an error while executing this button\'s command!', ephemeral: true});
+        return;
     }
 
     
