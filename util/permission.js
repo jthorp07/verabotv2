@@ -55,7 +55,7 @@ module.exports = {
                         resolve(false);
                     }
                 }
-                reject('the promise never resolved or rejected');            
+                reject(new Error('the promise never resolved or rejected'));            
             });
         });        
     }
