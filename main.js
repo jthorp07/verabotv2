@@ -86,11 +86,6 @@ client.on('ready', () => {
             return;
         }
 
-        if (rows.length == 0) {
-            console.log(`Bot ready!`);
-            return;
-        }
-
         rows.forEach(row => {
             let channel = row.channelId;
             let message = row.messageId;
@@ -131,14 +126,15 @@ client.on('interactionCreate', async interaction => {
     Perms.checkPermissions(con, command.permissions, interaction.member.id).then(perms => {
         if (!perms) {
             console.log(`  Insufficient permissions: Halting command`);
-            interaction.reply(`  Insufficient user permissions:\nPermission \'${command.permissions}\' required`);
+            interaction.reply(`  Insufficient user permissions:\n\`\`\`Permission \'${command.permissions}\' required\`\`\``);
             return;
         }
         try {
 		    command.execute(interaction, con);
             console.log(`  Command executed`);
 	    } catch (error) {
-		    console.error(error);
+		    console.log(`  An uncaught error occured in command execution`);
+            console.log(`    Error: ${error}`);
 		    interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	    }
     }).catch(err => {
@@ -187,10 +183,12 @@ client.on('interactionCreate', (interaction) => {
  */
 client.on('messageCreate', recvdMsg => {
 
-    if (!recvdMsg.type == 'DEFAULT') return;
+    if (recvdMsg.type == "APPLICATION_COMMAND") {
+        return;
+    }
     //TODO: Add XP system
     let msgType = recvdMsg.type;
-    console.log(`${msgType}`);
+    console.log(`${msgType} message received`);
     //TODO: Add Database channel support
     
 

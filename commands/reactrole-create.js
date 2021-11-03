@@ -27,8 +27,7 @@ module.exports = {
      */
     async execute(interaction, con) {
 
-        // TODO: Implement command code
-        // Permission is already checked at this point
+        // This might take longer than 3 seconds
         await interaction.deferReply();
 
         // Check if message already exists
@@ -46,24 +45,20 @@ module.exports = {
             }
         });
 
-        /**
-         * 1. Parse command arguments
-         *                                         steps 1 and 2 might be already covered
-         * 2. Fetch role & emoji resolvables
-         * 
-         * 3. Create & send message resolvable
-         * 
-         * 4. Add RR info to database for fetching in the future
-         */
+        // Fetching options from command
         let role = interaction.options.getRole('role');
         let emoji = interaction.options.getString('emoji');
         let title = interaction.options.getString('ping-for');
 
+        // Object literal for the message to be sent
         let rrMessage = {embeds: [new MessageEmbed()
             .setColor('GREEN')
             .setTitle('ReactRole Menu')
             .addField(`${title}`,`@${role.name} ==> ${emoji}`)]};
+        
         await interaction.editReply(rrMessage).then(reply => {
+
+            // Inserting reactrole information into the database
             con.query(`INSERT INTO messages(messageName, messageId, channelId) VALUES("reactrole", ${reply.id}, ${reply.channelId})`, (err, rows) => {
                 if (err) {
                     console.log('  Error: A MySQL query error occured while inserting data into "messages" table');
@@ -86,6 +81,7 @@ module.exports = {
                 console.log(`  Role and emoji information stored`);
             });
 
+            // Adds a reaction to the message for others to add to
             reply.react(emoji);
 
         });
