@@ -151,5 +151,5 @@ module.exports = {
 
         });
     },
-    permissions: 'all'
+    permissions: 'moderator'
 };
