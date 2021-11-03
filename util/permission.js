@@ -14,8 +14,8 @@ module.exports = {
 
         return new Promise((resolve, reject) => {
             if (permissionLevel == 'all') {
-                console.log(`Permissions: All -> Proceeding`);
-                return;
+                console.log(`  Sufficient perms`);
+                resolve(true);
             }
             let query = `SELECT * FROM permissions WHERE discordid = ${user}`
             con.query(query, (err, rows) => {
@@ -23,35 +23,34 @@ module.exports = {
                     console.log(`Error querying permissions`);
                     reject(err);
                 }
-                console.log(`Permissions: ${permissionLevel}`);
-                console.log(`isOwner: ${rows[0].isOwner}`);
+                console.log(`  Permissions: ${permissionLevel}`);
                 // Owner
                 if (permissionLevel == 'owner') {
                     if (rows[0].isOwner == 1) {
-                        console.log(`Sufficient perms`);
+                        console.log(`  Sufficient perms`);
                         resolve(true);
                     } else {
-                        console.log(`Insufficient perms`);
+                        console.log(`  Insufficient perms`);
                         resolve(false);
                     }
                 }
                 // Admin
                 if (permissionLevel == 'administrator') {
                     if (rows[0].isAdmin == 1) {
-                        console.log(`Sufficient perms`);
+                        console.log(`  Sufficient perms`);
                         resolve(true);
                     } else {
-                        console.log(`Insufficient perms`);
+                        console.log(`  Insufficient perms`);
                         resolve(false);
                     }
                 }
                 // Mod
                 if (permissionLevel == 'moderator') {
                     if (rows[0].isMod == 1) {
-                        console.log(`Sufficient perms`);
+                        console.log(`  Sufficient perms`);
                         resolve(true);
                     } else {
-                        console.log(`Insufficient perms`);
+                        console.log(`  Insufficient perms`);
                         resolve(false);
                     }
                 }

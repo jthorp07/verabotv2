@@ -1,5 +1,5 @@
 const {Client, Intents, Collection} = require('discord.js');
-const {TOKEN, DB, DBPASS} = require('./config.json');
+const {TOKEN, DB, DBPASS, GUILD_ID} = require('./config.json');
 const fs = require('fs');
 const mysql = require('mysql');
 
@@ -34,6 +34,10 @@ const con = mysql.createConnection({
 });
 console.log(`MySQL Connection Created`);
 
+/**
+ * Other variables for runtime
+ */
+var acceptReactionEvents;
 
 /*
 * Registering Commands
@@ -67,11 +71,47 @@ console.log(`  Button commands set`);
 
 
 /**
- * Bot's listeners
+ * Bot startup -> Mostly fetching stuff that is most likely 
+ * cached for runtime use
  */
 client.on('ready', () => {
 
-    console.log('Bot Ready.');
+    console.log('Bot Online: Fetching necessary items for runtime');
+    con.query(`SELECT * FROM messages`, (err, rows) => {
+
+        if (err) {
+            console.log('  Error: A MySQL query error occured while fetching data from "messages" table');
+            console.log(`    MySQL Error: ${err}`);
+            console.log('  WARNING: Bot functions requiring potentially cached messages may not function properly');
+            return;
+        }
+
+        if (rows.length == 0) {
+            console.log(`Bot ready!`);
+            return;
+        }
+
+        rows.forEach(row => {
+            let channel = row.channelId;
+            let message = row.messageId;
+            client.guilds.fetch(GUILD_ID)
+                .then(g => g.channels.fetch(channel)
+                .then(c => {
+                    if (c.type != "GUILD_TEXT") return;
+                    c.messages.fetch(message).then(m => console.log(`  Message ${row.messageName} fetched`))
+
+                    // So the bot knows to quickly return from reaction events
+                    if (row.messageName == 'reactrole') {
+                        acceptReactionEvents = true;
+                    }
+                })).catch(err => {
+                    console.log(`  Something went wrong fetching message ${row.messageName}`);
+                    console.log('  WARNING: Bot functions requiring potentially cached messages may not function properly');
+                });
+        });
+
+    });
+    console.log('Bot Ready!');
 
 });
 
@@ -147,11 +187,28 @@ client.on('interactionCreate', (interaction) => {
  */
 client.on('messageCreate', recvdMsg => {
 
+    if (!recvdMsg.type == 'DEFAULT') return;
     //TODO: Add XP system
-
+    let msgType = recvdMsg.type;
+    console.log(`${msgType}`);
     //TODO: Add Database channel support
     
 
+});
+
+/**
+ * Reactions
+ */
+client.on('messageReactionAdd', (reaction, user) => {
+
+    if (!acceptReactionEvents) return;
+
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+
+    if (!acceptReactionEvents) return;
+    
 });
 
 client.login(TOKEN);

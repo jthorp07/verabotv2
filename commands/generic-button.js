@@ -7,15 +7,28 @@ module.exports = {
             .setDescription('a generic command that makes a button'/* description*/),
     async execute(interaction) {
         // TODO: Implement command code
-
+        console.log(`  Test Buttons -> started`);
         // Somewhere within that:
         let rows = []; // will hold MessageActionRows -> idk but it doesnt work if you dont make the array then pass it in
         rows.push(new MessageActionRow());
         let comps = []; // will hold action row's components
         comps.push(new MessageButton()
-                        .setCustomId('generic-id'/* ID string up to 100 characters */))
+                        .setCustomId('generic-id-1'/* ID string up to 100 characters */)
                         .setLabel('Generic Button'/* Text that displays on the button */)
-                        .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */)
+                        .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */));
+        console.log(`  Button made`);
+        comps.push(new MessageButton()
+                        .setCustomId('generic-id-2'/* ID string up to 100 characters */)
+                        .setLabel('<@&770681365230256168>'/* Text that displays on the button */)
+                        .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */));
+        console.log(`  Button made`);
+        comps.push(new MessageButton()
+                        .setCustomId('generic-id-3'/* ID string up to 100 characters */)
+                        .setLabel('<:minecraft:774033984144277525>'/* Text that displays on the button */)
+                        .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */));
+        console.log(`  Button made`);
+        rows[0].addComponents(comps);
+        await interaction.reply({content:"This message has a button",components:rows});
     },
     permissions: 'all'
 };
