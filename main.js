@@ -198,11 +198,43 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     if (!acceptReactionEvents) return;
 
+    if (user.id != Config.BOT.ID) {
+        console.log("Reaction removed");
+
+        con.query(`SELECT * FROM messages WHERE name='reactrole'`, (err, rows) => {
+
+            if(err) console.log(err);
+            if (rows.length > 0) {
+
+                if (reaction.message.id == rows[0].id) {
+                    console.log("Reaction removed from RR message");
+                    UserReact.modifyUserRoles(con, reaction, user, true, reaction.message.guild);
+                }
+            }
+        });
+    }
+
 });
 
 client.on('messageReactionRemove', (reaction, user) => {
 
     if (!acceptReactionEvents) return;
+
+    if (user.id != Config.BOT.ID) {
+        console.log("Reaction removed");
+
+        con.query(`SELECT * FROM messages WHERE name='reactrole'`, (err, rows) => {
+
+            if(err) console.log(err);
+            if (rows.length > 0) {
+
+                if (reaction.message.id == rows[0].id) {
+                    console.log("Reaction removed from RR message");
+                    UserReact.modifyUserRoles(con, reaction, user, true, reaction.message.guild);
+                }
+            }
+        });
+    }
     
 });
 
