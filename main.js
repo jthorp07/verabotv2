@@ -19,13 +19,11 @@ const intent_flags = [Intents.FLAGS.GUILDS,
     Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, 
     Intents.FLAGS.DIRECT_MESSAGE_TYPING];
 
-console.log(`Client Instantiated`);
 const client = new Client({intents: intent_flags});
 
 /*
   Log in to database
 */
-console.log(`Connecting to MySQL Database`);
 const con = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -33,7 +31,6 @@ const con = mysql.createConnection({
     database: DB,
     insecureAuth: true
 });
-console.log(`MySQL Connection Created`);
 
 /**
  * Other variables for runtime
