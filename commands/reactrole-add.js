@@ -32,7 +32,6 @@ module.exports = {
         await interaction.deferReply();
         
         // If there isn't a reactrole message we're in trouble
-        console.log(`  Requesting reactrole message information...`)
         con.query(`SELECT * FROM messages WHERE messageName = "reactrole"`, (err, rows) => {
 
             if (err) {
@@ -49,7 +48,6 @@ module.exports = {
                 console.log('  Error: Reactrole message does not exist\n  Halting command')
                 return;
             }
-            console.log(`  Reactrole message found`);
 
             // Fetching all options since I need to use roleId in hte query and I want them all in the same place
             let role = interaction.options.getRole('role');
@@ -77,7 +75,6 @@ module.exports = {
                     console.log('  Error: Duplicate emoji or role found\n  Halting command')
                     return;
                 }
-                console.log(`  Reactrole data validated`);
 
                 interaction.guild.channels.fetch(channel).then(c => {
                         if (c.type != "GUILD_TEXT") {
@@ -88,14 +85,11 @@ module.exports = {
                         } 
                         c.messages.fetch(message).then(m => {
                             // Do work on the message here
-                            console.log('  Reactrole message fetched');
                             let embed = m.embeds[0];
                             embed.addField(`${title}`, `@${role.name} ==> ${emoji}`);
                             m.edit({embeds:[embed]}).then(msg => {
                                 msg.react(emoji);
-                                console.log(`  Message reaction added`);
                             });
-                            console.log(`  Message edited`);
 
                             // Time for more database queries!
                             // JK
@@ -109,8 +103,6 @@ module.exports = {
                                     interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
                                     return;
                                 }
-                                console.log('  Reactrole data updated');
-
                                 // Actually do something with the interaction
                                 // Then delete it to prevent clutter
                                 interaction.editReply({content: "It should be added!"}).then(reply => {

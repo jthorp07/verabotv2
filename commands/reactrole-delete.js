@@ -18,7 +18,6 @@ module.exports = {
         await interaction.deferReply();
 
         // Make sure a reactrole message exists before trying to delete
-        console.log(`  Requesting reactrole message information...`)
         con.query(`SELECT * FROM messages WHERE messageName="reactrole"`, (err, rows) => {
 
             if (err) {
@@ -38,8 +37,6 @@ module.exports = {
             let channel = rows[0].channelId;
 
             // Aight it exists, now find and delete the message
-            console.log(`  Reactrole message found`);
-            console.log(`  Requesting reactrole message from Discord`);
             interaction.guild.channels.fetch(channel).then(c => {
                 if (c.type != "GUILD_TEXT") {
                     // How would this even happen?
@@ -61,7 +58,6 @@ module.exports = {
                             interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
                             return;
                         }
-                        console.log(`  Reactrole message deleted from database`);
                     });
 
                     con.query(`DELETE FROM reactroles`, (err) => {
@@ -72,7 +68,6 @@ module.exports = {
                             interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
                             return;
                         }
-                        console.log(`  Reactrole data deleted from database`);
                     });
 
                     // Wrap it up by saying we doneeeeee

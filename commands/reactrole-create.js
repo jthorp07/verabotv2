@@ -67,7 +67,6 @@ module.exports = {
                     interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
                     return; 
                 }
-                console.log(`  Message information stored`);
             });
 
             con.query(`INSERT INTO reactroles (roleId, emoji) VALUES ('${role.id}', '${emoji}')`, (err, rows) => {
@@ -78,7 +77,6 @@ module.exports = {
                     interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
                     return;
                 }
-                console.log(`  Role and emoji information stored`);
             });
 
             // Adds a reaction to the message for others to add to

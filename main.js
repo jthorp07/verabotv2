@@ -47,20 +47,16 @@ client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const Perms = require('./util/permission'); // For checking user permissions before executing commands
 
-console.log(`Setting Commands`);
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-    console.log(`  Fetching command '${command.data.name}''`);
 	// Set a new item in the Collection
 	// With the key as the command name and the value as the exported module
 	client.commands.set(command.data.name, command);
-    console.log(`  Command '${command.data.name} set'`);
 }
 
 /*
   Preparing button vars for potential button handling
 */
-console.log(`Setting button commands`);
 let btnCommandsTemp = new Collection();
 const btnFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
 for (const file of btnFiles) {
@@ -68,7 +64,6 @@ for (const file of btnFiles) {
     btnCommandsTemp.set(btnCmd.data.customId, btnCmd);
 }
 const btnCommands = btnCommandsTemp;
-console.log(`  Button commands set`);
 
 
 /**
@@ -77,7 +72,6 @@ console.log(`  Button commands set`);
  */
 client.on('ready', () => {
 
-    console.log('Bot Online: Fetching necessary items for runtime');
     con.query(`SELECT * FROM messages`, (err, rows) => {
 
         if (err) {
@@ -94,7 +88,9 @@ client.on('ready', () => {
                 .then(g => g.channels.fetch(channel)
                 .then(c => {
                     if (c.type != "GUILD_TEXT") return;
-                    c.messages.fetch(message).then(m => console.log(`  Message ${row.messageName} fetched`))
+                    c.messages.fetch(message).catch(err => {
+                        console.log(`  Error fetching message: ${err}`);
+                    });
 
                     // So the bot knows to quickly return from reaction events
                     if (row.messageName == 'reactrole') {
@@ -126,7 +122,6 @@ client.on('interactionCreate', async interaction => {
     // Check user permissions
     Perms.checkPermissions(con, command.permissions, interaction.member.id).then(perms => {
         if (!perms) {
-            console.log(`  Insufficient permissions: Halting command`);
             interaction.reply(`  Insufficient user permissions:\n\`\`\`Permission \'${command.permissions}\' required\`\`\``);
             return;
         }

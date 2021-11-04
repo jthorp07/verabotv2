@@ -16,8 +16,7 @@ module.exports = {
             }
             rows[i].addComponents(comps);
         }
-        msg = {content:msgContent,components:rows};
-        console.log(`NOW THATS A MESSAGE\n${JSON.stringify(msg)}`)        
+        msg = {content:msgContent,components:rows};     
         await interaction.reply(msg);
 	},
     permissions: 'owner'

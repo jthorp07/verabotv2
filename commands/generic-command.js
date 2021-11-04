@@ -9,11 +9,11 @@ module.exports = {
             /*
               For other options:
 
-              .addStringOption(option => {
+              .addStringOption(option => 
                 option.setName('optionName')
                 .setDescription('desc')
                 .setRequired(true or false)
-              })
+              )
             */
 
     /**
@@ -31,5 +31,5 @@ module.exports = {
         */
 
     },
-    permissions: 'all'
+    permissions: 'owner'
 };

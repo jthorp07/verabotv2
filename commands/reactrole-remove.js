@@ -21,21 +21,7 @@ module.exports = {
         
         // This might take longer than 3 seconds
         await interaction.deferReply();
-        /**
-         * Steps to implement:
-         * 
-         * 1. Check for existence of RR message & pair to remove
-         * 
-         * 2. Fetch old message and make new embed as copy of old embed
-         * 
-         * 3. Remove field from embed with role & emoji
-         * 
-         * 4. Edit message (make sure to send new message object with new embed)
-         * 
-         * 5. Remove old pair from database
-         */
         // If there isn't a reactrole message we're in trouble
-        console.log(`  Requesting reactrole message information...`)
         con.query(`SELECT * FROM messages WHERE messageName = "reactrole"`, (err, rows) => {
 
             if (err) {
@@ -52,14 +38,12 @@ module.exports = {
                 console.log('  Error: Reactrole message does not exist\n  Halting command')
                 return;
             }
-            console.log(`  Reactrole message found`);
 
             // Fetching options and message params for fetching
             let emoji = interaction.options.getString('emoji');
             let channel = rows[0].channelId;
             let message = rows[0].messageId;
 
-            console.log(`  Requesting reactrole data...`)
             con.query(`SELECT * FROM reactroles WHERE emoji="${emoji}"`, (err, rows) => {
 
                 if (err) {
@@ -76,7 +60,6 @@ module.exports = {
                     console.log('  Error: Emoji not found\n  Halting command')
                     return;
                 }
-                console.log(`  Reactrole data validated`);
 
                 interaction.guild.channels.fetch(channel).then(c => {
                         if (c.type != "GUILD_TEXT") {
@@ -90,13 +73,11 @@ module.exports = {
                            
                             // Do work on the message here 
                             let embed = m.embeds[0];
-                            console.log('  Message resolved');
 
                             // Deleting the field containing the emoji
                             for (let i = 0; i < embed.fields.length; i++) {
                                 if (embed.fields[i].value.includes(emoji)) {
                                     embed.spliceFields(i, 1);
-                                    console.log('  Removed target field from message embed');
                                 }
                             }
                             m.edit({embeds:[embed]}).then(m => {

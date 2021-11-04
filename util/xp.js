@@ -79,9 +79,7 @@
      */
     static levelUp(id, level, message, con) {
 
-        console.log("LEVEL UP FUNCTION!");
-
-        console.log(`${id}, ${level}, ${message.guild}`)
+        console.log(`  User ${id} levelled up`);
 
         con.query(`SELECT * FROM channels WHERE name='levelup'`, (err, rows) => {
 
@@ -89,11 +87,9 @@
                 console.log(`  Error: A MySQL error occured\n  ${err}`);
                 return;
             } else if (rows.length == 0) {
-                console.log('no levelup channel');
+                console.log('  Error: No levelup channel');
                 return;
             } else {
-                console.log(`${JSON.stringify(rows)}`);
-                console.log(`Resolving channel ${rows[0].channelId}`);
                 message.guild.channels.fetch(rows[0].channelId).then(channel => {
                     if (channel.type != "GUILD_TEXT") return;
                     channel.send({content: `Congrats <@${id}>,\nyou just reached level ${level}!\n\nStay epic, gamer :sunglasses:`});

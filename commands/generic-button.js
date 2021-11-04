@@ -16,19 +16,8 @@ module.exports = {
                         .setCustomId('generic-id-1'/* ID string up to 100 characters */)
                         .setLabel('Generic Button'/* Text that displays on the button */)
                         .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */));
-        console.log(`  Button made`);
-        comps.push(new MessageButton()
-                        .setCustomId('generic-id-2'/* ID string up to 100 characters */)
-                        .setLabel('<@&770681365230256168>'/* Text that displays on the button */)
-                        .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */));
-        console.log(`  Button made`);
-        comps.push(new MessageButton()
-                        .setCustomId('generic-id-3'/* ID string up to 100 characters */)
-                        .setLabel('<:minecraft:774033984144277525>'/* Text that displays on the button */)
-                        .setStyle('PRIMARY'/* Flag to style the button... PRIMARY makes a regular Discord blue button */));
-        console.log(`  Button made`);
         rows[0].addComponents(comps);
         await interaction.reply({content:"This message has a button",components:rows});
     },
-    permissions: 'all'
+    permissions: 'owner'
 };
