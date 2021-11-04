@@ -21,11 +21,7 @@ module.exports = {
         await interaction.deferReply();
         con.query(`${interaction.options.getString('query')}`, (err, rows) => {
           if (err) {
-            interaction.editReply({content: `Error Querying Database\n\n
-                                          Your query:\n
-                                          \`\`\`${interaction.options.getString('query')}\`\`\`\n
-                                          MySQL Error:\n
-                                          ${err}`});
+            interaction.editReply({content: `Error Querying Database\n\nYour query:\n\`\`\`${interaction.options.getString('query')}\`\`\`\nMySQL Error:\n${err}`});
             return;
           }
 

@@ -1,7 +1,8 @@
 const {Client, Intents, Collection} = require('discord.js');
-const {TOKEN, DB, DBPASS, GUILD_ID} = require('./config.json');
+const {TOKEN, DB, DBPASS, GUILD_ID, CLIENT_ID} = require('./config.json');
 const fs = require('fs');
 const mysql = require('mysql');
+const XP = require('./util/xp.js');
 
 // Holy fuck that's a lot of intention :flushed:
 const intent_flags = [Intents.FLAGS.GUILDS, 
@@ -183,11 +184,15 @@ client.on('interactionCreate', (interaction) => {
  */
 client.on('messageCreate', recvdMsg => {
 
-    if (recvdMsg.type == "APPLICATION_COMMAND") {
+    console.log('Returning from messageCreate to prevent XP spam');
+    return;
+
+    let msgType = recvdMsg.type;
+    if (msgType == "APPLICATION_COMMAND" || recvdMsg.author.id == CLIENT_ID) {
         return;
     }
     //TODO: Add XP system
-    let msgType = recvdMsg.type;
+    XP.updateUserXP(recvdMsg, con);
     console.log(`${msgType} message received`);
     //TODO: Add Database channel support
     

@@ -83,18 +83,20 @@
 
         console.log(`${id}, ${level}, ${message.guild}`)
 
-        con.query(`SELECT * FROM channels WHERE name='LEVELUP'`, (err, rows) => {
+        con.query(`SELECT * FROM channels WHERE name='levelup'`, (err, rows) => {
 
             if (err) {
-                console.log('query error');
+                console.log(`  Error: A MySQL error occured\n  ${err}`);
                 return;
             } else if (rows.length == 0) {
                 console.log('no levelup channel');
                 return;
             } else {
-                console.log(`Resolving channel ${rows[0].id}`);
-                message.guild.channels.resolve(rows[0].id).fetch().then(channel => {
-                    channel.send(`Congrats <@${id}>,\nyou just reached level ${level}!\n\nStay epic, gamer :sunglasses:`);
+                console.log(`${JSON.stringify(rows)}`);
+                console.log(`Resolving channel ${rows[0].channelId}`);
+                message.guild.channels.fetch(rows[0].channelId).then(channel => {
+                    if (channel.type != "GUILD_TEXT") return;
+                    channel.send({content: `Congrats <@${id}>,\nyou just reached level ${level}!\n\nStay epic, gamer :sunglasses:`});
                 });
                 
             }
