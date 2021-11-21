@@ -1,5 +1,5 @@
-const Discord = require('discord.js');
-const mysql = require('mysql');
+const {MessageReaction, User} = require('discord.js');
+const{Connection} = require('mysql');
 
 module.exports = class UserReact {
 
@@ -8,16 +8,16 @@ module.exports = class UserReact {
      * adding or removing a reaction from a ReactRole
      * message
      * 
-     * @param {mysql.Connection} con
-     * @param {Discord.MessageReaction} reaction
-     * @param {Discord.User} user
+     * @param {Connection} con
+     * @param {MessageReaction} reaction
+     * @param {User} user
      * @param {boolean} remove True if removing the role as opposed to adding
-     * @param {Discord.Guild} guild
      */
-    static modifyUserRoles(con, reaction, user, remove, guild) {
+    static modifyUserRoles(con, reaction, user, remove) {
 
-        let member = guild.members.resolve(user);
+        let member = reaction.message.guild.members.resolve(user);
         let emojiIdentifier = reaction.emoji.identifier;
+        let guild = reaction.message.guild;
 
         console.log(emojiIdentifier);
 
@@ -33,8 +33,8 @@ module.exports = class UserReact {
                 return;
             }
 
-            let role = guild.roles.resolve(rows[0].role);
-            if (remove) {
+            let role = guild.roles.resolve(rows[0].roleId);
+            if (remove===true) {
                 console.log("Role removed");
                 member.roles.remove(role);
             } else {

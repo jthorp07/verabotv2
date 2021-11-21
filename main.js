@@ -1,8 +1,8 @@
 const {Client, Intents, Collection} = require('discord.js');
-const {TOKEN, DB, DBPASS, GUILD_ID, CLIENT_ID} = require('./config.json');
+const {TOKEN, DB, DBPASS, GUILD_ID, CLIENT_ID, OWNER_ID} = require('./config.json');
 const fs = require('fs');
 const mysql = require('mysql');
-const XP = require('./util/xp.js');
+const {XP, UserReact} = require('./util');
 
 // Holy fuck that's a lot of intention :flushed:
 const intent_flags = [Intents.FLAGS.GUILDS, 
@@ -35,7 +35,7 @@ const con = mysql.createConnection({
 /**
  * Other variables for runtime
  */
-var acceptReactionEvents;
+var acceptReactionEvents = false;
 
 /*
 * Registering Commands
@@ -196,19 +196,19 @@ client.on('messageCreate', recvdMsg => {
  */
 client.on('messageReactionAdd', (reaction, user) => {
 
-    if (!acceptReactionEvents) return;
+    if (!acceptReactionEvents == true) return;
 
-    if (user.id != Config.BOT.ID) {
+    if (user.id != CLIENT_ID && user.id != OWNER_ID) {
         console.log("Reaction removed");
 
-        con.query(`SELECT * FROM messages WHERE name='reactrole'`, (err, rows) => {
+        con.query(`SELECT * FROM messages WHERE messageName='reactrole'`, (err, rows) => {
 
             if(err) console.log(err);
             if (rows.length > 0) {
 
-                if (reaction.message.id == rows[0].id) {
+                if (reaction.message.id == rows[0].messageId) {
                     console.log("Reaction removed from RR message");
-                    UserReact.modifyUserRoles(con, reaction, user, true, reaction.message.guild);
+                    UserReact.modifyUserRoles(con, reaction, user, false);
                 }
             }
         });
@@ -218,19 +218,22 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 client.on('messageReactionRemove', (reaction, user) => {
 
-    if (!acceptReactionEvents) return;
+    if (!acceptReactionEvents==true) return;
 
-    if (user.id != Config.BOT.ID) {
+    if (user.id != CLIENT_ID && user.id != OWNER_ID) {
         console.log("Reaction removed");
 
-        con.query(`SELECT * FROM messages WHERE name='reactrole'`, (err, rows) => {
+        con.query(`SELECT * FROM messages WHERE messageName='reactrole'`, (err, rows) => {
 
-            if(err) console.log(err);
+            if(err) {
+                console.log(err);
+                return;
+            }
             if (rows.length > 0) {
 
-                if (reaction.message.id == rows[0].id) {
+                if (reaction.message.id == rows[0].messageId) {
                     console.log("Reaction removed from RR message");
-                    UserReact.modifyUserRoles(con, reaction, user, true, reaction.message.guild);
+                    UserReact.modifyUserRoles(con, reaction, user, true);
                 }
             }
         });

@@ -36,12 +36,12 @@ module.exports = {
                 console.log('  Error: A MySQL query error occured while fetching data from "messages" table');
                 console.log(`    MySQL Error: ${err}`);
                 interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
-                return
+                return false;
             }
 
             if (rows.length == 1) {
                 interaction.editReply(`A reactrole message already exists.\nUse /addreactrole to add to the existing reactrole message.`);
-                return;
+                return false;
             }
         });
 
@@ -65,7 +65,7 @@ module.exports = {
                     console.log('  -> File: reactrole_create.js');
                     console.log(`    MySQL Error: ${err}`);
                     interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
-                    return; 
+                    return false; 
                 }
             });
 
@@ -75,12 +75,13 @@ module.exports = {
                     console.log('  -> File: reactrole_create.js');
                     console.log(`    MySQL Error: ${err}`);
                     interaction.editReply({content: "Error: An error occured querying the database. Is it down?"});
-                    return;
+                    return false;
                 }
             });
 
             // Adds a reaction to the message for others to add to
             reply.react(emoji);
+            return true;
 
         });
     },
