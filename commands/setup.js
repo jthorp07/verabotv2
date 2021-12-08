@@ -10,21 +10,23 @@ const DATABASE_TABLES = [
     'CREATE TABLE IF NOT EXISTS reactroles(roleId VARCHAR(30) NOT NULL, emoji VARCHAR(70) NOT NULL);'
 ];
 
-const CHANNEL_NAMES = ['reports', 'levelup'];
+const CHANNEL_NAMES = {REPORTS:"reports", LEVELUP:"levelup"};
 
 module.exports = {
     data: new SlashCommandBuilder()
             .setName('setup')
-            .setDescription('Sets up the discord bot because I dont wanna do it again'),
-            /*
-              For other options:
-
-              .addStringOption(option => 
-                option.setName('optionName')
-                .setDescription('desc')
-                .setRequired(true or false)
-              )
-            */
+            .setDescription('Sets up the discord bot because I dont wanna do it again')
+            .addStringOption(option => {
+              option.setName(CHANNEL_NAMES.REPORTS)
+              .setDescription('ID of the channel to be designated for reports')
+              .setRequired(true);
+            })
+            .addStringOption(option => {
+                option.setName(CHANNEL_NAMES.LEVELUP)
+                .setDescription('ID of the channel to be designated for "level up" messages')
+                .setRequired(true);
+            }),
+            
 
     /**
      * 
@@ -33,6 +35,7 @@ module.exports = {
      */
     async execute(interaction, con) {
         // TODO: Implement command code
+        
 
     },
     permissions: 'owner'
