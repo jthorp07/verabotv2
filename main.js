@@ -58,10 +58,9 @@ let btnCommandsTemp = new Collection();
 const btnFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
 for (const file of btnFiles) {
     const btnCmd = require(`./buttons/${file}`);
-    btnCommandsTemp.set(btnCmd.data.customId, btnCmd);
+    btnCommandsTemp.set(btnCmd.data.buttonId, btnCmd);
 }
 const btnCommands = btnCommandsTemp;
-
 
 /**
  * Bot startup -> Mostly fetching stuff that is most likely 
@@ -144,8 +143,9 @@ client.on('interactionCreate', (interaction) => {
     if (!interaction.isButton()) return
 
     // Handle buttons here...
-    console.log(`Button pressed`)
+    
     const btnCommand = btnCommands.get(interaction.customId);
+    console.log(`Button pressed with id '${interaction.customId}'`);
     if (!btnCommand) {
         interaction.reply(`This button doesn't have a registered command.\n
                                 Please send a report to a bot developer to have this fixed.`);

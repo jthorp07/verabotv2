@@ -1,5 +1,5 @@
 const {SlashCommandBuilder} = require('@discordjs/builders');
-const {CommandInteraction} = require('discord.js');
+const {CommandInteraction, MessageActionRow, MessageButton} = require('discord.js');
 const {Connection} = require('mysql');
 
 module.exports = {
@@ -80,13 +80,33 @@ module.exports = {
                 return;
               }
 
+              let rows = [];
+              rows.push(new MessageActionRow());
+              let comps = [];
+              comps.push(new MessageButton()
+                        .setCustomId('ban')
+                        .setLabel('Ban User')
+                        .setStyle('DANGER'));
+              comps.push(new MessageButton()
+                        .setCustomId('warn')
+                        .setLabel('Warn User')
+                        .setStyle('SUCCESS'));
+              comps.push(new MessageButton()
+                        .setCustomId('close-report')
+                        .setLabel('Close Report')
+                        .setStyle('PRIMARY'));
+              rows[0].addComponents(comps);
+
               let reportMsg = {
-                content: `Report by ${reporter} (${reporterId})\n\`\`\`Report against:\n  ${authorName} (ID: ${authorId})\n\nReport reason:\n  ${reportReason}\`\`\``
+                content: `Report by ${reporter} (${reporterId})\n\`\`\`Report against:\n  ${authorName} (ID: ${authorId})\n\nReport reason:\n  ${reportReason}\`\`\``,
+                components: rows
               }
 
-              channel.send(message).then(m => {
-                channel.send(reportMsg);
+              
+              channel.send(reportMsg).then(message => {
+                
               });
+              
               
               dms.send({content: "Report sent!"});
               
