@@ -19,6 +19,11 @@ and has the following features:
   The bot's owner (I) can query the MySQL database, and the bot will send the results
   of the query in a Discord message.
   
+-User XP System
+  The bot will give users experience for each message sent, and users can level up by
+  gaining experience. More will be added to this feature, such as a leaderboard and
+  commands to view XP data.
+  
 I plan on adding more functionality to the bot as I get ideas for it. Anyone who wants
 can clone this repo and make their own instance of this bot and configure it for another
 Discord server. Currently, I am working on adding a /setup command that will make it
