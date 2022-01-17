@@ -7,19 +7,19 @@ for storing information such as channel and message Snowflakes (ids) for fetchin
 The bot is coded to function as a personal assistant to the staff of my Discord server
 and has the following features:
 
--React role
+-React role:
   Users can receive roles in the server by adding reactions to a message.
   
--Reporting
+-Reporting:
   Users can report messages from another user, and staff can then view and respond to
   the report by either banning or warning the reported user, or by closing the report
   without taking disciplinary action.
   
--Database Access
+-Database Access:
   The bot's owner (I) can query the MySQL database, and the bot will send the results
   of the query in a Discord message.
   
--User XP System
+-User XP System:
   The bot will give users experience for each message sent, and users can level up by
   gaining experience. More will be added to this feature, such as a leaderboard and
   commands to view XP data.
