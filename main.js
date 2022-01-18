@@ -32,6 +32,15 @@ const con = mysql.createConnection({
     insecureAuth: true
 });
 
+// Just read the library docs and apparently this is intended use
+con.connect(err => {
+    if (err) {
+        console.log(`Error connecting to database`);
+        return;
+    }
+    console.log(`Connected to database on thread ${con.threadId}`);
+})
+
 /**
  * Other variables for runtime
  */
@@ -180,15 +189,11 @@ client.on('messageCreate', recvdMsg => {
     return;
 
     let msgType = recvdMsg.type;
-    if (msgType == "APPLICATION_COMMAND" || recvdMsg.author.id == CLIENT_ID) {
+    if (msgType == "APPLICATION_COMMAND" || recvdMsg.author.id == CLIENT_ID || recvdMsg.content.startsWith('/')) {
         return;
     }
-    //TODO: Add XP system
     XP.updateUserXP(recvdMsg, con);
-    console.log(`${msgType} message received`);
-    //TODO: Add Database channel support
-    
-
+    console.log(`${msgType} message received`);    
 });
 
 /**

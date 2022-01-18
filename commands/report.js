@@ -80,6 +80,7 @@ module.exports = {
                 return;
               }
 
+              // Make Ban, Warn, Close buttons
               let rows = [];
               rows.push(new MessageActionRow());
               let comps = [];
@@ -102,11 +103,12 @@ module.exports = {
                 components: rows
               }
 
-              
-              channel.send(reportMsg).then(message => {
-                
+              channel.send({content:message.content,
+                            embeds:message.embeds,
+                            components:message.components})
+              .then(msg => {
+                channel.send(reportMsg);
               });
-              
               
               dms.send({content: "Report sent!"});
               
