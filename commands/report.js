@@ -89,6 +89,10 @@ module.exports = {
                         .setLabel('Ban User')
                         .setStyle('DANGER'));
               comps.push(new MessageButton()
+                        .setCustomId('kick')
+                        .setLabel('Kick User (Soft Ban)')
+                        .setStyle('DANGER'));
+              comps.push(new MessageButton()
                         .setCustomId('warn')
                         .setLabel('Warn User')
                         .setStyle('SUCCESS'));

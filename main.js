@@ -85,7 +85,6 @@ client.on('ready', () => {
             console.log('  WARNING: Bot functions requiring potentially cached messages may not function properly');
             return;
         }
-
         rows.forEach(row => {
             let channel = row.channelId;
             let message = row.messageId;
@@ -106,10 +105,8 @@ client.on('ready', () => {
                     console.log('  WARNING: Bot functions requiring potentially cached messages may not function properly');
                 });
         });
-
     });
     console.log('Bot Ready!');
-
 });
 
 // Command Handling
@@ -151,8 +148,7 @@ client.on('interactionCreate', async interaction => {
 client.on('interactionCreate', (interaction) => {
     if (!interaction.isButton()) return
 
-    // Handle buttons here...
-    
+    // Handle buttons here...    
     const btnCommand = btnCommands.get(interaction.customId);
     console.log(`Button pressed with id '${interaction.customId}'`);
     if (!btnCommand) {
@@ -175,9 +171,6 @@ client.on('interactionCreate', (interaction) => {
         interaction.reply({ content: 'There was an error while executing this button\'s command!', ephemeral: true});
         return;
     }
-
-    
-
 });
 
 /**

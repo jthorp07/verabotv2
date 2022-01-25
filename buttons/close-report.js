@@ -11,6 +11,8 @@ module.exports = {
      */
     async btnExecute(interaction) {
 
+        await interaction.deferReply();
+
         //Fetch message & disable buttons
         let newRows = [];
         let newComps = [];
@@ -26,5 +28,12 @@ module.exports = {
             embeds: interaction.message.embeds,
             components: newRows
         });
+
+        // Send message confirming closure, then delete 5 seconds later
+        await interaction.editReply('Report closed!').then(message => {
+            setTimeout(()=>{
+                message.delete();
+            }, 5000);
+        })
     },
 }
